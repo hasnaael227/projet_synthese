@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
 
 // ===== Authentification =====
 
@@ -51,3 +52,23 @@ Route::get('/change-password', [UserController::class, 'changePassword'])->name(
 Route::put('/update-password', [UserController::class, 'updatePassword'])->name('users.updatePassword');
 
 
+// Afficher la liste des catégories
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+
+// Afficher le formulaire de création d'une catégorie
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+
+// Enregistrer une nouvelle catégorie
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+
+// Afficher les détails d'une catégorie
+Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Afficher le formulaire d'édition d'une catégorie
+Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+
+// Mettre à jour une catégorie
+Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+
+// Supprimer une catégorie
+Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');

@@ -37,7 +37,7 @@ Route::post('/logout', [ApiUserController::class, 'logout']);
 Route::get('/admin/users', [ApiUserController::class, 'index']);            // Lister tous les utilisateurs
 Route::post('/admin/users', [ApiUserController::class, 'store']);           // Créer un nouvel utilisateur
 Route::get('/admin/users/{id}', [ApiUserController::class, 'show']);        // Afficher un utilisateur
-Route::put('/admin/users/{id}', [ApiUserController::class, 'update']);      // Modifier un utilisateur
+Route::put('/admin/users/{id}', [ApiUserController::class, 'update']);
 Route::delete('/admin/users/{id}', [ApiUserController::class, 'destroy']);  // Supprimer un utilisateur
 
 // Gestion du profil

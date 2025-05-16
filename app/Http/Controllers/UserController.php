@@ -236,21 +236,24 @@ class UserController extends Controller
 
 
          // Dashboard for both admin and formateur (role-based inside)
-        public function dashboard()
-        {
-            $user = Auth::user();
+        
+            public function dashboard()
+            {
+                $user = Auth::user();
 
-            if ($user->role === 'admin') {
-                // return admin dashboard view
-                return view('users.dashboard', compact('user'));
-            } elseif ($user->role === 'formateur') {
-                // return formateur dashboard view
-                return view('formateurs.dashboard', compact('user'));
+                if ($user->role === 'admin') {
+                    $adminCount = User::where('role', 'admin')->count();
+                    $formateurCount = User::where('role', 'formateur')->count();
+                    return view('users.dashboard', compact('adminCount', 'formateurCount'));
+                }
+
+                if ($user->role === 'formateur') {
+                    return view('formateurs.dashboard');
+                }
+
+                // Optionnel : redirection par défaut
+                return redirect('/')->with('error', 'Rôle non autorisé.');
             }
-
-            // fallback
-            abort(403, 'Unauthorized');
-        }
 
 
         public function showLoginForm()

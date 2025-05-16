@@ -30,7 +30,7 @@
 
             <div class="d-flex justify-content-between">
                 <a href="{{ route('users.editProfile') }}" class="btn btn-primary">Modifier le Profil</a>
-                <a href="{{ route('users.change_password') }}" class="btn btn-secondary">Changer le Mot de Passe</a>
+                <a href="{{ route('users.changePassword') }}" class="btn btn-secondary">Changer le Mot de Passe</a>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appem')
 
 @section('content')
 <div class="container">
@@ -8,22 +8,22 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('users.updateProfile', $user->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('formateurs.update', $user->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
-            <!-- Matricule -->
-            <div class="row mb-3">
-                <label for="matricule" class="col-md-4 col-form-label text-md-end">{{ __('Matricule') }}</label>
-                <div class="col-md-6">
-                    <input id="matricule" type="text" class="form-control @error('matricule') is-invalid @enderror" name="matricule" value="{{ old('matricule', $user->matricule) }}" required>
-                    @error('matricule')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
+        <!-- Matricule -->
+        <div class="row mb-3">
+            <label for="matricule" class="col-md-4 col-form-label text-md-end">{{ __('Matricule') }}</label>
+            <div class="col-md-6">
+                <input id="matricule" type="text" class="form-control @error('matricule') is-invalid @enderror" name="matricule" value="{{ old('matricule', $user->matricule) }}" required>
+                @error('matricule')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
+        </div>
 
         <!-- Nom -->
         <div class="row mb-3">
@@ -70,7 +70,7 @@
             <div class="col-md-6">
                 <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image">
                 @if ($user->image)
-                    <img src="{{ asset('storage/' . $user->image) }}" alt="Image de Profil" class="img-thumbnail mt-2" style="max-width: 100px;">
+                    <img src="{{ asset('public/storage/' . $user->image) }}" alt="Image de Profil" class="img-thumbnail mt-2" style="max-width: 100px;">
                 @endif
                 @error('image')
                     <span class="invalid-feedback" role="alert">
@@ -84,8 +84,8 @@
         <div class="row mb-0">
             <div class="col-md-6 offset-md-4">
                 <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-
-                <a href="{{ route('users.profile') }}" class="btn btn-secondary">
+                
+                <a href="{{ route('formateurs.profile') }}" class="btn btn-secondary">
                     {{ __('Retour au profil') }}
                 </a>
                 

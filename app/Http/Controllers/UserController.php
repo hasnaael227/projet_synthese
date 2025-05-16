@@ -11,203 +11,125 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    // Afficher la liste des utilisateurs (Admin uniquement)
+    // ==== ADMIN CRUD ====
+
     public function index()
     {
-        if (!Auth::user() || Auth::user()->role !== 'admin') {
-            return redirect()->route('users.dashboard')->with('error', 'Accès refusé.');
-        }
-
+        // Afficher tous les utilisateurs
         $users = User::all();
         return view('users.index', compact('users'));
     }
 
-
-public function create()
-{
-    return view('users.create');  // Le nom de la vue doit correspondre à un fichier Blade dans resources/views/users/create.blade.php
-}
-
-
-    // Afficher le formulaire pour créer un nouvel utilisateur
-    public function register()
-    {
-        if (!Auth::user() || Auth::user()->role !== 'admin') {
-            return redirect()->route('users.dashboard')->with('error', 'Accès refusé.');
+            public function create()
+        {
+            return view('users.create');
         }
 
-        return view('users.register');
-    }
+        public function store(Request $request)
+        {
+            $request->validate([
+                'matricule' => 'required|string|max:255', // add this
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+                'role' => 'required|in:admin,formateur',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-    // Enregistrer un nouvel utilisateur dans la base de données
-    public function store(Request $request)
-{
-    // Validation simple
-    $validated = $request->validate([
-        'matricule' => 'required|unique:users,matricule',
-        'name' => 'required',
-        'prename' => 'required',
-        'email' => 'required|email|unique:users,email',
-        'role' => 'required|in:admin,formateur',
-        'password' => 'required|min:6',
-    ]);
+            $imagePath = null;
 
-    // Création utilisateur
-    \App\Models\User::create([
-        'matricule' => $validated['matricule'],
-        'name' => $validated['name'],
-        'prename' => $validated['prename'],
-        'email' => $validated['email'],
-        'role' => $validated['role'],
-        'password' => bcrypt($validated['password']),
-    ]);
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('users', 'public');
+            }
 
-    return redirect()->route('users.index')->with('success', 'Utilisateur ajouté avec succès');
-}
+            User::create([
+                'matricule' => $request->matricule,  // add this line
+                'name' => $request->name,
+                'prename'   => $request->prename, 
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role' => $request->role,
+                'image' => $imagePath,
+            ]);
 
-    // Afficher les détails d'un utilisateur
+            return redirect()->route('users.index')->with('success', 'Utilisateur ajouté avec succès.');
+        }
+
+        // Afficher un utilisateur (admin ou formateur)
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return view('users.show', compact('user'));
-    }
-
-    // Afficher le formulaire de modification d'un utilisateur
-    public function edit($id)
-    {
-        if (!Auth::user() || Auth::user()->role !== 'admin') {
-            return redirect()->route('users.dashboard')->with('error', 'Accès refusé.');
-        }
-
-        $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
-    }
-
-    // Mettre à jour un utilisateur
-    public function update(Request $request, $id)
-    {
-        if (!Auth::user() || Auth::user()->role !== 'admin') {
-            return redirect()->route('users.dashboard')->with('error', 'Accès refusé.');
-        }
-
-        $validated = $request->validate([
-            'matricule' => 'required|string|max:255|unique:users,matricule,' . $id,
-            'name' => 'required|string|max:255',
-            'prename' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'role' => 'required|in:admin,formateur',
-        ]);
-
-        $user = User::findOrFail($id);
-
-        if ($request->hasFile('image')) {
-            if ($user->image) {
-                Storage::disk('public')->delete($user->image);
-            }
-            $user->image = $request->file('image')->store('users', 'public');
-        }
-
-        $user->update($request->only('matricule', 'name', 'prename', 'email', 'role'));
-
-        return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès');
-    }
-
-    // Show the login form
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
-
-    // Handle login
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user);
-
-            if ($user->role == 'admin') {
-                return redirect()->route('users.dashboard');
-            } elseif ($user->role == 'formateur') {
-                return redirect()->route('formateurs.profile');
-            }
-        }
-
-        return redirect()->route('login')->withErrors(['email' => 'Invalid credentials']);
-    }
-
-    // Display the admin dashboard
-    public function dashboard()
-    {
         $user = Auth::user();
+        $showUser = User::findOrFail($id);
 
-        if ($user->role !== 'admin') {
-            return redirect()->route('users.dashboard')->withErrors(['role' => 'Accès non autorisé.']);
+        if ($user->role === 'admin') {
+            return view('users.show', ['user' => $showUser]);
+        } elseif ($user->role === 'formateur' && $showUser->role === 'formateur') {
+            return view('formateurs.show', ['user' => $showUser]);
         }
 
-        $adminCount = User::where('role', 'admin')->count();
-        $formateurCount = User::where('role', 'formateur')->count();
-
-        return view('users.dashboard', compact('adminCount', 'formateurCount', 'user'));
+        abort(403, 'Accès refusé.');
     }
 
-    // Déconnexion
-        public function logout(Request $request)
-    {
-        auth()->logout();
+        public function edit($id)
+        {
+            if (!Auth::user() || Auth::user()->role !== 'admin') {
+                return redirect()->route('login')->with('error', 'Accès refusé.');
+            }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/login'); // Ou la route de connexion
-    }
-
-    
-
-    // Supprimer un utilisateur
-    public function destroy($id)
-    {
-        if (!Auth::user() || Auth::user()->role !== 'admin') {
-            return redirect()->route('users.dashboard')->with('error', 'Accès refusé.');
+            $user = User::findOrFail($id);
+            return view('users.edit', compact('user'));
         }
 
-        $user = User::findOrFail($id);
-        $user->delete();
+        public function update(Request $request, $id)
+        {
+            if (!Auth::user() || Auth::user()->role !== 'admin') {
+                return redirect()->route('login')->with('error', 'Accès refusé.');
+            }
 
-        return redirect()->route('users.index')->with('success', 'Utilisateur supprimé avec succès');
-    }
+            $user = User::findOrFail($id);
 
-    public function changePasswordForm()
-    {
-        return view('formateurs.change_password'); // Vue changement mdp formateur
-    }
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'prename'   => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+                'role' => 'required|in:admin,formateur',
+                'password' => 'nullable|string|min:6|confirmed',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-    public function changePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->role = $request->role;
 
-        $user = Auth::user();
+            if ($request->filled('password')) {
+                $user->password = bcrypt($request->password);
+            }
 
-        if (!Hash::check($request->input('current_password'), $user->password)) {
-            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('users', 'public'); // saved as 'users/filename.jpg'
+                $user->image = $imagePath;
+            }
+
+            $user->save();
+
+            return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès.');
         }
 
-        $user->password = Hash::make($request->input('new_password'));
-        $user->save();
+        public function destroy($id)
+        {
+            if (!Auth::user() || Auth::user()->role !== 'admin') {
+                return redirect()->route('login')->with('error', 'Accès refusé.');
+            }
 
-        return redirect()->route('formateurs.profile')->with('success', 'Password changed successfully.');
-    }
+            $user = User::findOrFail($id);
+            $user->delete();
 
-    public function profile()
+            return redirect()->route('users.index')->with('success', 'Utilisateur supprimé avec succès.');
+        }
+        
+            // ==== PROFIL ====
+
+        public function profile()
     {
         $user = Auth::user();
 
@@ -215,11 +137,12 @@ public function create()
             return view('users.profile', compact('user'));
         } elseif ($user->role === 'formateur') {
             return view('formateurs.profile', compact('user'));
-        } else {
-            abort(403, 'Unauthorized action.');
         }
+
+        abort(403, 'Accès refusé.');
     }
 
+        // Editer le profil (admin ou formateur)
     public function editProfile()
     {
         $user = Auth::user();
@@ -228,25 +151,148 @@ public function create()
             return view('users.editProfile', compact('user'));
         } elseif ($user->role === 'formateur') {
             return view('formateurs.edit', compact('user'));
-        } else {
-            abort(403, 'Unauthorized action.');
         }
+
+        abort(403, 'Accès refusé.');
     }
 
+        // Mettre à jour le profil (admin ou formateur)
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
-        $user->name = $request->input('name');
-        $user->prename = $request->input('prename');
-        // ajouter d'autres champs à modifier si besoin
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->hasFile('image')) {
+            $user->image = $request->file('image')->store('users', 'public');
+        }
 
         $user->save();
 
         if ($user->role === 'admin') {
-            return redirect()->route('users.profile')->with('success', 'Profil mis à jour avec succès.');
+            return redirect()->route('users.profile')->with('success', 'Profil mis à jour.');
         } elseif ($user->role === 'formateur') {
-            return redirect()->route('formateurs.profile')->with('success', 'Profil mis à jour avec succès.');
+            return redirect()->route('formateurs.profile')->with('success', 'Profil mis à jour.');
         }
     }
+
+        public function changePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.']);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        if ($user->role === 'admin') {
+            return redirect()->route('users.profile')->with('success', 'Mot de passe modifié avec succès.');
+        } elseif ($user->role === 'formateur') {
+            return redirect()->route('formateurs.profile')->with('success', 'Mot de passe modifié avec succès.');
+        }
+    }
+
+        public function updatePassword(Request $request)
+        {
+            $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+            $user = Auth::user();
+
+            // Logique différente selon le rôle si besoin
+            if (!in_array($user->role, ['admin', 'formateur'])) {
+                abort(403, "Accès refusé.");
+            }
+
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            // Redirection différente selon le rôle
+            if ($user->role === 'admin') {
+                return redirect()->route('users.dashboard')->with('success', 'Mot de passe modifié avec succès.');
+            } elseif ($user->role === 'formateur') {
+                return redirect()->route('formateurs.profile')->with('success', 'Mot de passe modifié avec succès.');
+            }
+        }
+
+
+            // ==== DASHBOARDS ====
+
+
+         // Dashboard for both admin and formateur (role-based inside)
+        public function dashboard()
+        {
+            $user = Auth::user();
+
+            if ($user->role === 'admin') {
+                // return admin dashboard view
+                return view('users.dashboard', compact('user'));
+            } elseif ($user->role === 'formateur') {
+                // return formateur dashboard view
+                return view('formateurs.dashboard', compact('user'));
+            }
+
+            // fallback
+            abort(403, 'Unauthorized');
+        }
+
+
+        public function showLoginForm()
+        {
+            return view('auth.login');
+        }
+        public function loginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('users.dashboard');
+            } elseif (Auth::user()->role === 'formateur') {
+                return redirect()->route('formateurs.dashboard');
+            }
+
+            // Optional: default redirect for other roles
+            return redirect('/home');
+        }
+            return back()->withErrors([
+            'email' => 'Email ou mot de passe incorrect.',
+        ])->onlyInput('email');
+    }
+
+        public function logout(Request $request)
+        {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect('/login'); // or wherever you want to send the user after logout
+        }
+    
 }

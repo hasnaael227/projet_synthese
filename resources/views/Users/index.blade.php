@@ -8,7 +8,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <a href="{{ route('users.register') }}" class="btn btn-primary mb-3">
+    <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">
         <i class="fa-solid fa-plus"></i> Ajouter des utilisateurs
     </a>
 

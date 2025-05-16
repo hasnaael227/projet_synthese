@@ -150,7 +150,7 @@ class UserController extends Controller
         if ($user->role === 'admin') {
             return view('users.editProfile', compact('user'));
         } elseif ($user->role === 'formateur') {
-            return view('formateurs.editProfile', compact('user'));
+            return view('formateurs.edit', compact('user'));
         }
 
         abort(403, 'Accès refusé.');

@@ -15,12 +15,12 @@ Route::get('/admin/dashboard', [UserController::class, 'dashboard'])->name('user
 Route::get('/formateur/dashboard', [UserController::class, 'dashboard'])->name('formateurs.dashboard');
 
 Route::prefix('formateur')->name('formateurs.')->group(function () {
-    Route::get('/profile', [UserController::class, 'formateurProfile'])->name('profile');
-    Route::get('/edit', [UserController::class, 'formateurEdit'])->name('edit');
-    Route::post('/edit', [UserController::class, 'formateurUpdate'])->name('update');
-    Route::get('/show/{id}', [UserController::class, 'formateurShow'])->name('show');
-    Route::get('/change-password', [UserController::class, 'formateurChangePasswordForm'])->name('change_password_form');
-    Route::post('/change-password', [UserController::class, 'formateurChangePassword'])->name('change_password');
+    Route::get('/profile', [UserController::class, 'Profile'])->name('profile');
+    Route::get('/edit', [UserController::class, 'edit'])->name('edit');
+    Route::post('/edit', [UserController::class, 'Update'])->name('update');
+    Route::get('/show/{id}', [UserController::class, 'Show'])->name('show');
+    Route::get('/change-password', [UserController::class, 'changePassword'])->name('change_password_form');
+    Route::post('/change-password', [UserController::class, 'changePassword'])->name('change_password');
 });
 
 // ===== Gestion des utilisateurs (admin) =====

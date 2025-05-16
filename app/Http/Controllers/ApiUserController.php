@@ -194,5 +194,41 @@ public function profile($id)
         // Sans authentification, on simule juste la déconnexion
         return response()->json(['message' => 'Déconnexion réussie']);
     }
+    // === Dashboard ===
+        public function dashboard(Request $request)
+    {
+        $userId = $request->input('id'); // ou tu peux utiliser 'role'
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Utilisateur non trouvé.'
+            ], 404);
+        }
+
+        if ($user->role === 'admin') {
+            $adminCount = User::where('role', 'admin')->count();
+            $formateurCount = User::where('role', 'formateur')->count();
+
+            return response()->json([
+                'role' => 'admin',
+                'admin_count' => $adminCount,
+                'formateur_count' => $formateurCount,
+                'message' => 'Dashboard data for admin'
+            ]);
+        }
+
+        if ($user->role === 'formateur') {
+            return response()->json([
+                'role' => 'formateur',
+                'message' => 'Bienvenue sur votre dashboard formateur'
+            ]);
+        }
+
+        return response()->json([
+            'error' => 'Rôle non autorisé.'
+        ], 403);
+    }
+
 }
 

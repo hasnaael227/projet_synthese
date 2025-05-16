@@ -33,6 +33,9 @@ use App\Http\Controllers\ApiUserController;
 Route::post('/login', [ApiUserController::class, 'login']);
 Route::post('/logout', [ApiUserController::class, 'logout']);
 
+Route::get('/dashboard', [ApiUserController::class, 'dashboard']);
+
+
 // === Routes pour ADMIN ===
 Route::get('/admin/users', [ApiUserController::class, 'index']);            // Lister tous les utilisateurs
 Route::post('/admin/users', [ApiUserController::class, 'store']);           // Créer un nouvel utilisateur

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiUserController;
+use App\Http\Controllers\ApiCategoryController;
 
 
 
@@ -58,4 +59,11 @@ Route::put('/formateur/password/{id}', [ApiUserController::class, 'updatePasswor
 // === Déconnexion (pour tous) ===
 Route::post('/logout', [ApiUserController::class, 'logout']);
 
+
+Route::get('/categories', [ApiCategoryController::class, 'index']);          // Liste toutes les catégories
+Route::post('/categories', [ApiCategoryController::class, 'store']);         // Crée une nouvelle catégorie
+Route::get('/categories/{category}', [ApiCategoryController::class, 'show']); // Affiche une catégorie spécifique
+Route::put('/categories/{category}', [ApiCategoryController::class, 'update']); // Met à jour une catégorie
+Route::patch('/categories/{category}', [ApiCategoryController::class, 'update']); // Met à jour partiellement une catégorie
+Route::delete('/categories/{category}', [ApiCategoryController::class, 'destroy']); // Supprime une catégorie
 

@@ -1,10 +1,16 @@
 @extends('layouts.app')
 
+@section('title', 'Détails de la catégorie')
+
 @section('content')
-    <h1>Détails de la Catégorie</h1>
+    <h1>Détails de la catégorie</h1>
 
-    <p><strong>Nom :</strong> {{ $category->name }}</p>
-    <p><strong>Description :</strong> {{ $category->description }}</p>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ $category->name }}</h5>
+            <p class="card-text">{{ $category->description ?? 'Pas de description.' }}</p>
+        </div>
+    </div>
 
-    <a href="{{ route('categories.index') }}">⬅ Retour à la liste</a>
+    <a href="{{ route('categories.index') }}" class="btn btn-link mt-3">⬅ Retour à la liste</a>
 @endsection

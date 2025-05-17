@@ -56,6 +56,12 @@
         <li><a href="{{ route('categories.create') }}"> <i class="fa-regular fa-pen-to-square"></i> ajouter les categories</a></li>
 
         <li><a href="{{ route('formateurs.change_password') }}"> <i class="fa-solid fa-lock"></i> Changer le Mot de Passe</a></li>
+<br>
+                <li><a href="{{ route('chapitres.index') }}"> <i class="fa-regular fa-pen-to-square"></i> liste des Chapitres</a></li>
+        <li><a href="{{ route('chapitres.create') }}"> <i class="fa-regular fa-pen-to-square"></i> ajouter les Chapitres</a></li>
+<br>
+                        <li><a href="{{ route('cours.index') }}"> <i class="fa-regular fa-pen-to-square"></i> liste des Cours</a></li>
+        <li><a href="{{ route('cours.create') }}"> <i class="fa-regular fa-pen-to-square"></i> ajouter les Cours</a></li>
         <li class="nav-item">
                     <a class="nav-link text-danger" href="{{ route('users.logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -110,6 +110,10 @@
                     </a>
                 </li>
 
+                
+                        <li><a href="{{ route('cours.index') }}"> <i class="fa-regular fa-pen-to-square"></i> liste des Cours</a></li>
+        <li><a href="{{ route('cours.create') }}"> <i class="fa-regular fa-pen-to-square"></i> ajouter les Cours</a></li>
+
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="{{ route('users.logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CoursController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChapitreController;
 
 // ===== Authentification =====
 
@@ -76,23 +78,39 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 
 
 // Liste de tous les chapitres
-Route::get('chapitres', [App\Http\Controllers\ChapitreController::class, 'index'])->name('chapitres.index');
+Route::get('chapitres', [ChapitreController::class, 'index'])->name('chapitres.index');
 
 // Formulaire de création
-Route::get('chapitres/create', [App\Http\Controllers\ChapitreController::class, 'create'])->name('chapitres.create');
+Route::get('chapitres/create', [ChapitreController::class, 'create'])->name('chapitres.create');
 
 // Stocker un nouveau chapitre
-Route::post('chapitres', [App\Http\Controllers\ChapitreController::class, 'store'])->name('chapitres.store');
+Route::post('chapitres', [ChapitreController::class, 'store'])->name('chapitres.store');
 
 // Afficher un chapitre spécifique par id
-Route::get('chapitres/{id}', [App\Http\Controllers\ChapitreController::class, 'show'])->name('chapitres.show');
+Route::get('chapitres/{id}', [ChapitreController::class, 'show'])->name('chapitres.show');
 
 // Formulaire d’édition par id
-Route::get('chapitres/{id}/edit', [App\Http\Controllers\ChapitreController::class, 'edit'])->name('chapitres.edit');
+Route::get('chapitres/{id}/edit', [ChapitreController::class, 'edit'])->name('chapitres.edit');
 
 // Mettre à jour un chapitre par id
-Route::put('chapitres/{id}', [App\Http\Controllers\ChapitreController::class, 'update'])->name('chapitres.update');
+Route::put('chapitres/{id}', [ChapitreController::class, 'update'])->name('chapitres.update');
 
 // Supprimer un chapitre par id
-Route::delete('chapitres/{id}', [App\Http\Controllers\ChapitreController::class, 'destroy'])->name('chapitres.destroy');
+Route::delete('chapitres/{id}', [ChapitreController::class, 'destroy'])->name('chapitres.destroy');
+
+
+
+// Cours CRUD
+Route::get('/cours', [CoursController::class, 'index'])->name('cours.index');             // Afficher tous les cours
+Route::get('/cours/create', [CoursController::class, 'create'])->name('cours.create');     // Formulaire d’ajout
+Route::post('/cours', [CoursController::class, 'store'])->name('cours.store');             // Enregistrer le cours
+Route::get('/cours/{id}', [CoursController::class, 'show'])->name('cours.show');           // Afficher un cours spécifique
+Route::get('/cours/{id}/edit', [CoursController::class, 'edit'])->name('cours.edit');      // Formulaire de modification
+Route::put('/cours/{id}', [CoursController::class, 'update'])->name('cours.update');       // Enregistrer les modifications
+Route::delete('/cours/{id}', [CoursController::class, 'destroy'])->name('cours.destroy');  // Supprimer un cours
+
+// Route AJAX pour charger les chapitres par catégorie
+// Route::get('/chapitres-by-categorie2/{id}', [CoursController::class, 'getChapitresByCategorie']);
+Route::get('/chapitres-by-categorie/{id}', [ChapitreController::class, 'getByCategorie']);
+
 

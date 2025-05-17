@@ -65,5 +65,10 @@ class ChapitreController extends Controller
         $chapitre->delete();
         return redirect()->route('chapitres.index')->with('success', 'Chapitre supprimé');
     }
+        public function getByCategorie($id)
+    {
+        $chapitres = Chapitre::where('category_id', $id)->get(['id', 'titre']);
+        return response()->json($chapitres);
+    }
 }
 

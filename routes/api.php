@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\ApiCategoryController;
+use App\Http\Controllers\ApiChapitreController;
 
 
 
@@ -66,3 +67,9 @@ Route::get('/categories/{id}', [ApiCategoryController::class, 'show']);      // 
 Route::put('/categories/{id}', [ApiCategoryController::class, 'update']);    // Met à jour une catégorie par id
 Route::delete('/categories/{id}', [ApiCategoryController::class, 'destroy']); // Supprime une catégorie par id
 
+
+Route::get('/chapitres', [ApiChapitreController::class, 'index']);          // Liste tous les chapitres
+Route::get('/chapitres/{id}', [ApiChapitreController::class, 'show']);      // Voir un chapitre
+Route::post('/chapitres', [ApiChapitreController::class, 'store']);         // Créer un chapitre
+Route::put('/chapitres/{id}', [ApiChapitreController::class, 'update']);    // Mettre à jour un chapitre
+Route::delete('/chapitres/{id}', [ApiChapitreController::class, 'destroy']); // Supprimer un chapitre

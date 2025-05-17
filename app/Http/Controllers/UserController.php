@@ -248,7 +248,7 @@ class UserController extends Controller
                 }
 
                 if ($user->role === 'formateur') {
-                    return view('formateurs.dashboard');
+                    return view('formateurs.dashboard', compact('user'));
                 }
 
                 // Optionnel : redirection par défaut

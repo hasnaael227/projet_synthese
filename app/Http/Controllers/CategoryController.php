@@ -22,16 +22,37 @@ class CategoryController extends Controller
 
     // Enregistrer une nouvelle catégorie
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+{
+    // Validate form inputs (adjust rules as needed)
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'prix' => 'nullable|numeric',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // max 2MB
+    ]);
 
-        Category::create($request->all());
+    $filename = null;
 
-        return redirect()->route('categories.index')->with('success', 'Catégorie créée avec succès.');
+    // Check if an image was uploaded
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        // Create a unique filename with timestamp + original name
+        $filename = time() . '_' . $file->getClientOriginalName();
+        // Move file to public/images folder
+        $file->move(public_path('images/categories'), $filename);
     }
+
+    // Create new category record
+    $category = new Category();
+    $category->name = $request->input('name');
+    $category->description = $request->input('description');
+    $category->prix = $request->input('prix');
+    $category->image = $filename; // save filename or null if no file uploaded
+    $category->save();
+
+    // Redirect back with success message
+    return redirect()->route('categories.index')->with('success', 'Category created successfully!');
+}
 
     // Afficher les détails d'une catégorie
     public function show(Category $category)
@@ -46,17 +67,27 @@ class CategoryController extends Controller
     }
 
     // Mettre à jour la catégorie
-    public function update(Request $request, Category $category)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
+        public function update(Request $request, Category $category)
+        {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'prix' => 'nullable|numeric',
+            ]);
 
-        $category->update($request->all());
+            $data = $request->all();
 
-        return redirect()->route('categories.index')->with('success', 'Catégorie mise à jour avec succès.');
-    }
+            if ($request->hasFile('image')) {
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move(public_path('images/categories'), $imageName);
+                $data['image'] = 'images/categories/' . $imageName;
+            }
+
+            $category->update($data);
+
+            return redirect()->route('categories.index')->with('success', 'Catégorie mise à jour avec succès.');
+        }
 
     // Supprimer une catégorie
     public function destroy(Category $category)

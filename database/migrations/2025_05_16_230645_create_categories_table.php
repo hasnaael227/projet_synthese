@@ -9,12 +9,14 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+public function up()
 {
     Schema::create('categories', function (Blueprint $table) {
         $table->id();
         $table->string('name');
         $table->text('description')->nullable();
+        $table->string('image')->nullable(); // for storing image filename or path
+        $table->decimal('prix', 8, 2)->nullable(); // for price, 8 digits in total, 2 after the decimal
         $table->timestamps();
     });
 }

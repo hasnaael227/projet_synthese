@@ -52,6 +52,9 @@
         </li>
         <li><a href="{{ route('formateurs.profile') }}"> <i class="fa-regular fa-address-card"></i> Mon Profil</a></li>
         <li><a href="{{ route('formateurs.edit') }}"> <i class="fa-regular fa-pen-to-square"></i> Modifier</a></li>
+                <li><a href="{{ route('categories.index') }}"> <i class="fa-regular fa-pen-to-square"></i> liste des categories</a></li>
+        <li><a href="{{ route('categories.create') }}"> <i class="fa-regular fa-pen-to-square"></i> ajouter les categories</a></li>
+
         <li><a href="{{ route('formateurs.change_password') }}"> <i class="fa-solid fa-lock"></i> Changer le Mot de Passe</a></li>
         <li class="nav-item">
                     <a class="nav-link text-danger" href="{{ route('users.logout') }}"

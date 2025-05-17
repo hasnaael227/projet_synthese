@@ -72,3 +72,27 @@ Route::put('/categories/{category}', [CategoryController::class, 'update'])->nam
 
 // Supprimer une catégorie
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+
+
+// Liste de tous les chapitres
+Route::get('chapitres', [App\Http\Controllers\ChapitreController::class, 'index'])->name('chapitres.index');
+
+// Formulaire de création
+Route::get('chapitres/create', [App\Http\Controllers\ChapitreController::class, 'create'])->name('chapitres.create');
+
+// Stocker un nouveau chapitre
+Route::post('chapitres', [App\Http\Controllers\ChapitreController::class, 'store'])->name('chapitres.store');
+
+// Afficher un chapitre spécifique par id
+Route::get('chapitres/{id}', [App\Http\Controllers\ChapitreController::class, 'show'])->name('chapitres.show');
+
+// Formulaire d’édition par id
+Route::get('chapitres/{id}/edit', [App\Http\Controllers\ChapitreController::class, 'edit'])->name('chapitres.edit');
+
+// Mettre à jour un chapitre par id
+Route::put('chapitres/{id}', [App\Http\Controllers\ChapitreController::class, 'update'])->name('chapitres.update');
+
+// Supprimer un chapitre par id
+Route::delete('chapitres/{id}', [App\Http\Controllers\ChapitreController::class, 'destroy'])->name('chapitres.destroy');
+

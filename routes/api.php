@@ -62,8 +62,7 @@ Route::post('/logout', [ApiUserController::class, 'logout']);
 
 Route::get('/categories', [ApiCategoryController::class, 'index']);          // Liste toutes les catégories
 Route::post('/categories', [ApiCategoryController::class, 'store']);         // Crée une nouvelle catégorie
-Route::get('/categories/{category}', [ApiCategoryController::class, 'show']); // Affiche une catégorie spécifique
-Route::put('/categories/{category}', [ApiCategoryController::class, 'update']); // Met à jour une catégorie
-Route::patch('/categories/{category}', [ApiCategoryController::class, 'update']); // Met à jour partiellement une catégorie
-Route::delete('/categories/{category}', [ApiCategoryController::class, 'destroy']); // Supprime une catégorie
+Route::get('/categories/{id}', [ApiCategoryController::class, 'show']);      // Affiche une catégorie par id
+Route::put('/categories/{id}', [ApiCategoryController::class, 'update']);    // Met à jour une catégorie par id
+Route::delete('/categories/{id}', [ApiCategoryController::class, 'destroy']); // Supprime une catégorie par id
 

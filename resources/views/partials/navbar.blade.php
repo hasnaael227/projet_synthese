@@ -98,6 +98,8 @@
                     </div>
                 </li>
 
+                <li><a href="{{ route('categories.index') }}"> <i class="fa-regular fa-pen-to-square"></i> liste des categories</a></li>
+        <li><a href="{{ route('categories.create') }}"> <i class="fa-regular fa-pen-to-square"></i> ajouter les categories</a></li>
 
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('users.profile') ? 'active' : '' }}" href="{{ route('users.profile') }}">

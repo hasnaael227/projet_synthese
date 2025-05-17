@@ -85,4 +85,10 @@ class ApiChapitreController extends Controller
 
         return response()->json(['message' => 'Chapitre supprimé avec succès']);
     }
+     // GET /api/chapitres-by-categorie/{id}
+    public function getByCategorie($id)
+    {
+        $chapitres = Chapitre::where('category_id', $id)->get(['id', 'titre']);
+        return response()->json($chapitres);
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Cours;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CoursController;
@@ -113,4 +114,21 @@ Route::delete('/cours/{id}', [CoursController::class, 'destroy'])->name('cours.d
 // Route::get('/chapitres-by-categorie2/{id}', [CoursController::class, 'getChapitresByCategorie']);
 Route::get('/chapitres-by-categorie/{id}', [ChapitreController::class, 'getByCategorie']);
 
+Route::get('/test-cours', function() {
+    return response()->json(Cours::all());
+});
 
+// Test 1
+Route::get('/test1', function() {
+    return response()->json(Cours::with('formateur')->get());
+});
+
+// Test 2
+Route::get('/test2', function() {
+    return response()->json(Cours::with('categorie')->get());
+});
+
+// Test 3
+Route::get('/test3', function() {
+    return response()->json(Cours::with('chapitre')->get());
+});

@@ -1,10 +1,13 @@
 <?php
 
+namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\ApiCategoryController;
 use App\Http\Controllers\ApiChapitreController;
+use App\Http\Controllers\ApiCoursController;
 
 
 
@@ -73,3 +76,13 @@ Route::get('/chapitres/{id}', [ApiChapitreController::class, 'show']);      // V
 Route::post('/chapitres', [ApiChapitreController::class, 'store']);         // Créer un chapitre
 Route::put('/chapitres/{id}', [ApiChapitreController::class, 'update']);    // Mettre à jour un chapitre
 Route::delete('/chapitres/{id}', [ApiChapitreController::class, 'destroy']); // Supprimer un chapitre
+
+
+Route::get('/cours', [ApiCoursController::class, 'index']);
+Route::post('/cours', [ApiCoursController::class, 'store']);
+Route::get('/cours/{id}', [ApiCoursController::class, 'show']);
+Route::put('/cours/{id}', [ApiCoursController::class, 'update']);
+Route::patch('/cours/{id}', [ApiCoursController::class, 'update']);
+Route::delete('/cours/{id}', [ApiCoursController::class, 'destroy']);
+
+Route::get('/chapitres-by-categorie/{id}', [ApiChapitreController::class, 'getByCategorie']);

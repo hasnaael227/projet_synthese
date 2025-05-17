@@ -12,6 +12,11 @@ class Cours extends Model
         'category_id', 'chapitre_id', 'formateur_id'
     ];
 
+        public function formateur()
+    {
+        return $this->belongsTo(User::class, 'formateur_id');
+    }
+
     public function categorie()
     {
         return $this->belongsTo(Category::class, 'category_id');
@@ -20,10 +25,5 @@ class Cours extends Model
     public function chapitre()
     {
         return $this->belongsTo(Chapitre::class, 'chapitre_id');
-    }
-
-    public function formateur()
-    {
-        return $this->belongsTo(User::class, 'formateur_id');
     }
 }

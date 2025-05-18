@@ -45,30 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    /**
-     * Relation avec les projets (un utilisateur peut être chef de plusieurs projets).
-     */
-    public function projets()
+    // Relation : un formateur a plusieurs cours
+    public function cours()
     {
-        // return $this->hasMany(Projet::class, 'user_id');
-        return $this->hasMany(Projet::class);
-
-    }
-
-    /**
-     * Vérifie si l'utilisateur est un admin.
-     */
-    public function isAdmin()
-    {
-        return $this->role === 'admin';
-    }
-
-    /**
-     * Vérifie si l'utilisateur est un employé.
-     */
-    public function isEmployee()
-    {
-        return $this->role === 'employee';
+        return $this->hasMany(Cours::class, 'formateur_id');
     }
 }

@@ -8,10 +8,9 @@
         </div>
         <div class="card-body">
             <h5 class="card-title">{{ $cours->titre }}</h5>
-            <p class="card-text"><strong>Contenu :</strong> {{ $cours->contenu }}</p>
+            <p class="card-text"><strong>description :</strong> {{ $cours->description }}</p>
 
-            <p><strong>Catégorie :</strong> {{ $cours->categorie->nom }}</p>
-            <p><strong>Chapitre :</strong> {{ $cours->chapitre->titre }}</p>
+            <p><strong>Catégorie :</strong> {{ $cours->categorie->name }}</p>
             <p><strong>Formateur :</strong> {{ $cours->formateur->name }}</p>
 
             @if($cours->image)

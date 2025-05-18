@@ -65,34 +65,8 @@
             </select>
         </div>
 
-        <div class="form-group mb-3">
-            <label for="chapitre_id">Chapitre :</label>
-            <select name="chapitre_id" id="chapitre_id" class="form-control" required>
-                @foreach($chapitres as $chapitre)
-                    <option value="{{ $chapitre->id }}" {{ $cours->chapitre_id == $chapitre->id ? 'selected' : '' }}>
-                        {{ $chapitre->titre }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
         <button type="submit" class="btn btn-success">Mettre à jour</button>
         <a href="{{ route('cours.index') }}" class="btn btn-secondary">Annuler</a>
     </form>
 </div>
-
-<script>
-    document.getElementById('category_id').addEventListener('change', function () {
-        const categoryId = this.value;
-        fetch(`/chapitres-by-categorie/${categoryId}`)
-            .then(response => response.json())
-            .then(data => {
-                const chapitreSelect = document.getElementById('chapitre_id');
-                chapitreSelect.innerHTML = '';
-                data.forEach(chapitre => {
-                    chapitreSelect.innerHTML += `<option value="${chapitre.id}">${chapitre.titre}</option>`;
-                });
-            });
-    });
-</script>
 @endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CoursController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChapitreController;
+use App\Http\Controllers\EtudiantController;
 
 // ===== Authentification =====
 
@@ -112,23 +113,24 @@ Route::delete('/cours/{id}', [CoursController::class, 'destroy'])->name('cours.d
 
 // Route AJAX pour charger les chapitres par catégorie
 // Route::get('/chapitres-by-categorie2/{id}', [CoursController::class, 'getChapitresByCategorie']);
-Route::get('/chapitres-by-categorie/{id}', [ChapitreController::class, 'getByCategorie']);
+Route::get('getByCategory/{categoryId}', [CoursController::class, 'getByCategory']);
 
-Route::get('/test-cours', function() {
-    return response()->json(Cours::all());
-});
+Route::get('/chapitres/{chapitre}/add-course', [ChapitreController::class, 'addCourseForm'])->name('chapitres.addCourseForm');
+Route::post('/chapitres/{chapitre}/add-course', [ChapitreController::class, 'addCourse'])->name('chapitres.addCourse');
+Route::delete('/chapitres/{chapitre}/cours/{cours}', [ChapitreController::class, 'removeCourse'])->name('chapitres.removeCourse');
 
-// Test 1
-Route::get('/test1', function() {
-    return response()->json(Cours::with('formateur')->get());
-});
 
-// Test 2
-Route::get('/test2', function() {
-    return response()->json(Cours::with('categorie')->get());
-});
 
-// Test 3
-Route::get('/test3', function() {
-    return response()->json(Cours::with('chapitre')->get());
-});
+// ✅ Login (nommé "inscription")
+Route::get('/login/inscription', [EtudiantController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login/etudiant', [EtudiantController::class, 'login'])->name('login.submit');
+Route::post('/logout/etudiant', [EtudiantController::class, 'logout'])->name('logout');
+
+// ✅ CRUD Étudiants
+Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
+Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');
+Route::post('/etudiants', [EtudiantController::class, 'store'])->name('etudiants.store');
+Route::get('/etudiants/{etudiant}', [EtudiantController::class, 'show'])->name('etudiants.show');
+Route::get('/etudiants/{etudiant}/edit', [EtudiantController::class, 'edit'])->name('etudiants.edit');
+Route::put('/etudiants/{etudiant}', [EtudiantController::class, 'update'])->name('etudiants.update');
+Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');

@@ -97,14 +97,17 @@
                 <td>{{ $chapitre->titre }}</td>
                 <td>{{ $chapitre->category->name }}</td>
                 <td>
-    <a href="{{ route('chapitres.show', $chapitre->id) }}" class="btn btn-primary btn-sm" title="Voir">Voir</a>
-    <a href="{{ route('chapitres.edit', $chapitre->id) }}" class="btn btn-success btn-sm" title="Éditer">Éditer</a>
-    <form action="{{ route('chapitres.destroy', $chapitre->id) }}" method="POST" onsubmit="return confirm('Supprimer ce chapitre ?')" style="display:inline;">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">Supprimer</button>
-    </form>
-</td>
+                    <a href="{{ route('chapitres.show', $chapitre->id) }}" class="btn btn-primary btn-sm" title="Voir">Voir</a>
+                    <a href="{{ route('chapitres.edit', $chapitre->id) }}" class="btn btn-success btn-sm" title="Éditer">Éditer</a>
+                    <form action="{{ route('chapitres.destroy', $chapitre->id) }}" method="POST" onsubmit="return confirm('Supprimer ce chapitre ?')" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">Supprimer</button>
+                    </form>
+
+                    <!-- Add Course button -->
+                    <a href="{{ route('chapitres.addCourseForm', $chapitre->id) }}" class="btn btn-info btn-sm" title="Ajouter un cours">Ajouter un cours</a>
+                </td>
             </tr>
         @endforeach
     </tbody>

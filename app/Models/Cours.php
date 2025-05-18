@@ -8,22 +8,31 @@ use Illuminate\Database\Eloquent\Model;
 class Cours extends Model
 {
     protected $fillable = [
-        'titre', 'contenu', 'image', 'type_pdf', 'type_video',
-        'category_id', 'chapitre_id', 'formateur_id'
+        'titre',
+        'description',
+        'type_pdf',
+        'type_video',
+        'category_id',
+        'formateur_id',
     ];
 
-        public function formateur()
-    {
-        return $this->belongsTo(User::class, 'formateur_id');
-    }
-
+    // Relation avec la catégorie
     public function categorie()
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function chapitre()
+    // Relation avec le formateur (utilisateur)
+    public function formateur()
     {
-        return $this->belongsTo(Chapitre::class, 'chapitre_id');
+        return $this->belongsTo(User::class, 'formateur_id');
     }
+    public function chapitres()
+    {
+        return $this->belongsToMany(Chapitre::class, 'chapitre_cours');
+    }
+    public function category()
+{
+    return $this->belongsTo(Category::class);
+}
 }

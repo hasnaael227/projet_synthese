@@ -12,13 +12,13 @@ class ApiCoursController extends Controller
 {
         public function index()
     {
-        $cours = Cours::with('formateur', 'categorie', 'chapitre')->get();
+        $cours = Cours::with('formateur', 'categorie')->get();
         return response()->json($cours);
     }
 
     public function show($id)
     {
-        $cours = Cours::with('formateur', 'categorie', 'chapitre')->find($id);
+        $cours = Cours::with('formateur', 'categorie')->find($id);
         if (!$cours) {
             return response()->json(['message' => 'Cours non trouvé'], 404);
         }
@@ -29,20 +29,15 @@ class ApiCoursController extends Controller
     {
         $validated = $request->validate([
             'titre' => 'required|string|max:255',
-            'contenu' => 'required|string',
-            'image' => 'nullable|image',
+            'description' => 'required|string',
             'type_pdf' => 'nullable|file|mimes:pdf',
             'type_video' => 'nullable|file|mimetypes:video/mp4,video/avi,video/mpeg',
             'category_id' => 'required|exists:categories,id',
-            'chapitre_id' => 'required|exists:chapitres,id',
             'formateur_id' => 'required|exists:users,id',
         ]);
 
         $cours = new Cours($validated);
 
-        if ($request->hasFile('image')) {
-            $cours->image = $request->file('image')->store('images/cours', 'public');
-        }
 
         if ($request->hasFile('type_pdf')) {
             $cours->type_pdf = $request->file('type_pdf')->store('pdfs', 'public');
@@ -66,20 +61,14 @@ class ApiCoursController extends Controller
 
         $validated = $request->validate([
             'titre' => 'required|string|max:255',
-            'contenu' => 'required|string',
-            'image' => 'nullable|image',
+            'description' => 'required|string',
             'type_pdf' => 'nullable|file|mimes:pdf',
             'type_video' => 'nullable|file|mimetypes:video/mp4,video/avi,video/mpeg',
             'category_id' => 'required|exists:categories,id',
-            'chapitre_id' => 'required|exists:chapitres,id',
             'formateur_id' => 'required|exists:users,id',
         ]);
 
         $cours->update($validated);
-
-        if ($request->hasFile('image')) {
-            $cours->image = $request->file('image')->store('images/cours', 'public');
-        }
 
         if ($request->hasFile('type_pdf')) {
             $cours->type_pdf = $request->file('type_pdf')->store('pdfs', 'public');

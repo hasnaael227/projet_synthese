@@ -16,7 +16,6 @@
                 <th>Titre</th>
                 <th>Formateur</th>
                 <th>Catégorie</th>
-                <th>Chapitre</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -26,7 +25,6 @@
                 <td>{{ $cour->titre }}</td>
                 <td>{{ $cour->formateur->name }}</td>
                 <td>{{ $cour->categorie->name }}</td>
-                <td>{{ $cour->chapitre->titre }}</td>
                 <td>
                 <a href="{{ route('cours.show', $cour) }}" class="btn btn-sm btn-info">Voir</a>
                 <a href="{{ route('cours.edit', $cour) }}" class="btn btn-sm btn-primary">Modifier</a>

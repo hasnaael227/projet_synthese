@@ -85,15 +85,54 @@
     <input type="text" name="titre" id="titre" value="{{ old('titre') }}" required>
 
     <label for="category_id">Catégorie:</label>
-    <select name="category_id" id="category_id" required>
-        <option value="">--Choisir une catégorie--</option>
-        @foreach($categories as $category)
-            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                {{ $category->name }}
-            </option>
-        @endforeach
-    </select>
+<select name="category_id" id="category_id" required>
+    <option value="">--Choisir une catégorie--</option>
+    @foreach($categories as $category)
+        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+            {{ $category->name }}
+        </option>
+    @endforeach
+</select>
 
+<label for="cours_id">Cours:</label>
+<select name="cours_id" id="cours_id" required>
+    <option value="">--Choisir un cours--</option>
+    
+</select>
     <button type="submit">Créer</button>
-</form>
+
+<script>
+    const baseApiUrl = "{{ url('') }}";  // URL de base de ton app Laravel
+
+    document.getElementById('category_id').addEventListener('change', function() {
+        let categoryId = this.value;
+        const coursSelect = document.getElementById('cours_id');
+
+        coursSelect.innerHTML = '<option value="">Chargement...</option>';
+
+        if (!categoryId) {
+            coursSelect.innerHTML = '<option value="">--Choisir un cours--</option>';
+            return;
+        }
+
+        fetch(`${baseApiUrl}/getByCategory/${categoryId}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Erreur réseau');
+                return response.json();
+            })
+            .then(data => {
+                coursSelect.innerHTML = '<option value="">--Choisir un cours--</option>';
+                data.forEach(cours => {
+                    let option = document.createElement('option');
+                    option.value = cours.id;
+                    option.textContent = cours.titre;
+                    coursSelect.appendChild(option);
+                });
+            })
+            .catch(() => {
+                coursSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+            });
+    });
+</script>
+
 @endsection

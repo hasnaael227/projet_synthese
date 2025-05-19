@@ -126,6 +126,15 @@ Route::get('/login/inscription', [EtudiantController::class, 'showLoginForm'])->
 Route::post('/login/etudiant', [EtudiantController::class, 'login'])->name('login.submit');
 Route::post('/logout/etudiant', [EtudiantController::class, 'logout'])->name('logout');
 
+// Affichage du profil
+Route::get('/etudiant/profile', [EtudiantController::class, 'profile'])->name('etudiant.profile');
+
+// Formulaire de modification du profil
+Route::get('/etudiant/profile/edit', [EtudiantController::class, 'editProfile'])->name('etudiant.edit-profile');
+
+// Mise à jour (vers méthode unique update())
+Route::put('/etudiant/update', [EtudiantController::class, 'update'])->name('etudiants.update');
+
 // ✅ CRUD Étudiants
 Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
 Route::get('/etudiants/create', [EtudiantController::class, 'create'])->name('etudiants.create');

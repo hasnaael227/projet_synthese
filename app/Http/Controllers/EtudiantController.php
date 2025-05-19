@@ -50,19 +50,47 @@ class EtudiantController extends Controller
         return view('etudiants.edit', compact('etudiant'));
     }
 
-    public function update(Request $request, Etudiant $etudiant)
+        public function update(Request $request, Etudiant $etudiant = null)
     {
+        // Si aucun étudiant passé en paramètre, on récupère l'étudiant connecté (profil)
+        if (!$etudiant) {
+            $etudiant = Etudiant::find(session('etudiant')->id);
+            if (!$etudiant) {
+                return redirect()->route('login.form');
+            }
+        }
+
+        // Validation
         $request->validate([
             'nom' => 'required',
             'prenom' => 'required',
             'numTel' => 'required',
             'email' => 'required|email|unique:etudiants,email,' . $etudiant->id,
+            'password' => 'nullable|min:6',
         ]);
 
-        $etudiant->update($request->only(['nom', 'prenom', 'numTel', 'email']));
+        // Mise à jour des champs
+        $etudiant->nom = $request->nom;
+        $etudiant->prenom = $request->prenom;
+        $etudiant->numTel = $request->numTel;
+        $etudiant->email = $request->email;
 
-        return redirect()->route('etudiants.index');
+        if ($request->filled('password')) {
+            $etudiant->password = Hash::make($request->password);
+        }
+
+        $etudiant->save();
+
+        // Si mise à jour du profil connecté, mettre à jour la session
+        if (session('etudiant') && session('etudiant')->id == $etudiant->id) {
+            session(['etudiant' => $etudiant]);
+            return redirect()->route('etudiant.profile')->with('success', 'Profil mis à jour avec succès.');
+        }
+
+        // Sinon (ex: admin modifie un étudiant), rediriger vers liste étudiants
+        return redirect()->route('etudiants.index')->with('success', 'Étudiant mis à jour avec succès.');
     }
+
 
     public function destroy(Etudiant $etudiant)
     {
@@ -88,7 +116,7 @@ class EtudiantController extends Controller
 
         if ($etudiant && Hash::check($request->password, $etudiant->password)) {
             session(['etudiant' => $etudiant]);
-            return redirect()->route('etudiants.index');
+        return redirect()->route('etudiant.profile');
         }
 
         return back()->withErrors(['email' => 'Email ou mot de passe incorrect']);
@@ -122,39 +150,5 @@ class EtudiantController extends Controller
 
         return view('etudiants.edit-profile', compact('etudiant'));
     }
-
-        public function updateProfile(Request $request)
-    {
-        $etudiant = Etudiant::find(session('etudiant')->id);
-
-        if (!$etudiant) {
-            return redirect()->route('login.form');
-        }
-
-        $request->validate([
-            'nom' => 'required',
-            'prenom' => 'required',
-            'numTel' => 'required',
-            'email' => 'required|email|unique:etudiants,email,' . $etudiant->id,
-            'password' => 'nullable|min:6',
-        ]);
-
-        $etudiant->nom = $request->nom;
-        $etudiant->prenom = $request->prenom;
-        $etudiant->numTel = $request->numTel;
-        $etudiant->email = $request->email;
-
-        if ($request->filled('password')) {
-            $etudiant->password = Hash::make($request->password);
-        }
-
-        $etudiant->save();
-
-        session(['etudiant' => $etudiant]); // Mise à jour de la session
-
-        return redirect()->route('etudiant.profile')->with('success', 'Profil mis à jour avec succès.');
-    }
-
-
 }
 

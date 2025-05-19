@@ -100,5 +100,28 @@ class EtudiantController extends Controller
         session()->forget('etudiant');
         return redirect()->route('login.form');
     }
+
+        public function profile()
+    {
+        $etudiant = session('etudiant');
+
+        if (!$etudiant) {
+            return redirect()->route('login.form');
+        }
+
+        return view('etudiants.profile', compact('etudiant'));
+    }
+
+        public function editProfile()
+    {
+        $etudiant = session('etudiant');
+
+        if (!$etudiant) {
+            return redirect()->route('login.form');
+        }
+
+        return view('etudiants.edit-profile', compact('etudiant'));
+    }
+
 }
 

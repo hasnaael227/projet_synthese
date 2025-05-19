@@ -14,4 +14,7 @@ class Etudiant extends Model
     protected $hidden = [
         'password',
     ];
+    public function progressions() {
+    return $this->hasMany(Progression::class, 'etudiant_id');
+}
 }

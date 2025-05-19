@@ -143,3 +143,15 @@ Route::get('/etudiants/{etudiant}', [EtudiantController::class, 'show'])->name('
 Route::get('/etudiants/{etudiant}/edit', [EtudiantController::class, 'edit'])->name('etudiants.edit');
 Route::put('/etudiants/{etudiant}', [EtudiantController::class, 'update'])->name('etudiants.update');
 Route::delete('/etudiants/{etudiant}', [EtudiantController::class, 'destroy'])->name('etudiants.destroy');
+
+
+Route::post('/etudiant/progression/{cours}', [EtudiantController::class, 'marquerCoursTermine'])
+    ->name('etudiant.progression.marquer');
+
+
+Route::get('/etudiant/{etudiant}/progression', [EtudiantController::class, 'afficherProgression'])
+    ->name('etudiant.progression');
+
+    Route::get('/formateur/etudiants/progression', [UserController::class, 'suiviEtudiants'])
+    ->name('formateur.etudiants.progression');
+

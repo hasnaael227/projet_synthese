@@ -1,3 +1,6 @@
+@extends('layouts.appETU')
+
+@section('content')
 <h1>Connexion Étudiant</h1>
 
 @if ($errors->any())
@@ -12,3 +15,4 @@
     <input type="password" name="password" placeholder="Mot de passe"><br>
     <button type="submit">Se connecter</button>
 </form>
+@endsection

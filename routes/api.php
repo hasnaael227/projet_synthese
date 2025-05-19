@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Etudiant;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\ApiCoursController;
@@ -109,3 +110,13 @@ Route::post('/etudiants', [ApiEtudiantController::class, 'store']);
 Route::get('/etudiants/{id}', [ApiEtudiantController::class, 'show']);
 Route::put('/etudiants/{id}', [ApiEtudiantController::class, 'update']);
 Route::delete('/etudiants/{id}', [ApiEtudiantController::class, 'destroy']);
+
+    Route::get('/etudiant/profile', [ApiEtudiantController::class, 'profile']);
+    Route::get('/etudiant/edit', [ApiEtudiantController::class, 'editProfile']);
+    Route::put('/etudiant/profile/update', [ApiEtudiantController::class, 'updateProfile']);
+
+Route::get('/fake-login', function () {
+    $etudiant = Etudiant::first(); // ou find(1), selon ton besoin
+    session(['etudiant' => $etudiant]);
+    return response()->json(['message' => 'Login simulé', 'etudiant' => $etudiant]);
+});

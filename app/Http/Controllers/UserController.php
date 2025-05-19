@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Etudiant;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -297,5 +299,36 @@ class UserController extends Controller
 
             return redirect('/login'); // or wherever you want to send the user after logout
         }
+
+        public function voirAvancementEtudiants($etudiantId)
+{
+    $formateurId = auth()->id();
+
+    $etudiant = Etudiant::findOrFail($etudiantId);
+
+    $categories = Category::with(['cours' => function ($q) use ($formateurId) {
+        $q->where('formateur_id', $formateurId);
+    }])->get();
+
+    $coursTermines = $etudiant->progressions()->where('completed', true)->pluck('cours_id')->toArray();
+
+    $resultats = [];
+
+    foreach ($categories as $categorie) {
+        $coursIds = $categorie->cours->pluck('id')->toArray();
+        $total = count($coursIds);
+        $done = count(array_intersect($coursIds, $coursTermines));
+
+        if ($total > 0) {
+            $resultats[] = [
+                'categorie' => $categorie->nom,
+                'progression' => round(($done / $total) * 100)
+            ];
+        }
+    }
+
+    return view('formateur.progressionEtudiant', compact('resultats', 'etudiant'));
+}
+
     
 }

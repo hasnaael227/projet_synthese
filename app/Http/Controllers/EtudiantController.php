@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Etudiant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -150,5 +151,35 @@ class EtudiantController extends Controller
 
         return view('etudiants.edit-profile', compact('etudiant'));
     }
+
+
+    public function afficherProgression($etudiantId)
+{
+    $etudiant = Etudiant::find($etudiantId);
+
+    if (!$etudiant) {
+        abort(404, 'Étudiant non trouvé');
+    }
+    
+    $categories = Category::with('cours')->get();
+
+    $coursTermines = $etudiant->progressions()->where('completed', true)->pluck('cours_id')->toArray();
+
+    $resultats = [];
+
+    foreach ($categories as $categorie) {
+        $coursIds = $categorie->cours->pluck('id')->toArray();
+        $total = count($coursIds);
+        $done = count(array_intersect($coursIds, $coursTermines));
+
+        $resultats[] = [
+            'categorie' => $categorie->name,
+            'progression' => $total > 0 ? round(($done / $total) * 100) : 0
+        ];
+    }
+
+    return view('etudiants.progression', compact('resultats'));
+}
+
 }
 

@@ -1,3 +1,6 @@
+@extends('layouts.appETU')
+
+@section('content')
 <h1>Créer Étudiant</h1>
 <form action="{{ route('etudiants.store') }}" method="POST">
     @csrf
@@ -8,3 +11,4 @@
     <input type="password" name="password" placeholder="Mot de passe"><br>
     <button type="submit">Enregistrer</button>
 </form>
+@endsection

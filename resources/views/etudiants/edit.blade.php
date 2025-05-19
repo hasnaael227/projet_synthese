@@ -1,3 +1,6 @@
+@extends('layouts.appETU')
+
+@section('content')
 <h1>Modifier Étudiant</h1>
 <form action="{{ route('etudiants.update', $etudiant) }}" method="POST">
     @csrf @method('PUT')
@@ -7,3 +10,4 @@
     <input type="email" name="email" value="{{ $etudiant->email }}"><br>
     <button type="submit">Modifier</button>
 </form>
+@endsection

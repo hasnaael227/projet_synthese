@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiUserController;
+use App\Http\Controllers\ApiCoursController;
 use App\Http\Controllers\ApiCategoryController;
 use App\Http\Controllers\ApiChapitreController;
-use App\Http\Controllers\ApiCoursController;
+use App\Http\Controllers\ApiEtudiantController;
 
 
 
@@ -71,11 +71,22 @@ Route::put('/categories/{id}', [ApiCategoryController::class, 'update']);    // 
 Route::delete('/categories/{id}', [ApiCategoryController::class, 'destroy']); // Supprime une catégorie par id
 
 
-Route::get('/chapitres', [ApiChapitreController::class, 'index']);          // Liste tous les chapitres
-Route::get('/chapitres/{id}', [ApiChapitreController::class, 'show']);      // Voir un chapitre
-Route::post('/chapitres', [ApiChapitreController::class, 'store']);         // Créer un chapitre
-Route::put('/chapitres/{id}', [ApiChapitreController::class, 'update']);    // Mettre à jour un chapitre
-Route::delete('/chapitres/{id}', [ApiChapitreController::class, 'destroy']); // Supprimer un chapitre
+
+// 📘 Routes CRUD Chapitres
+Route::get('/chapitres', [ApiChapitreController::class, 'index']);
+Route::post('/chapitres', [ApiChapitreController::class, 'store']);
+Route::get('/chapitres/{id}', [ApiChapitreController::class, 'show']);
+Route::put('/chapitres/{id}', [ApiChapitreController::class, 'update']);
+Route::delete('/chapitres/{id}', [ApiChapitreController::class, 'destroy']);
+
+// 📂 Chapitres par catégorie
+Route::get('/chapitres-by-categorie/{id}', [ApiChapitreController::class, 'getByCategorie']);
+
+// ➕ Ajouter un cours à un chapitre
+Route::post('/chapitres/{id}/add-cours', [ApiChapitreController::class, 'addCourse']);
+
+// ❌ Supprimer un cours d’un chapitre
+Route::delete('/chapitres/{chapitreId}/remove-cours/{coursId}', [ApiChapitreController::class, 'removeCourse']);
 
 
 Route::get('/cours', [ApiCoursController::class, 'index']);
@@ -85,4 +96,16 @@ Route::put('/cours/{id}', [ApiCoursController::class, 'update']);
 Route::patch('/cours/{id}', [ApiCoursController::class, 'update']);
 Route::delete('/cours/{id}', [ApiCoursController::class, 'destroy']);
 
-Route::get('/chapitres-by-categorie/{id}', [ApiChapitreController::class, 'getByCategorie']);
+Route::get('/cours/category/{categoryId}', [ApiCoursController::class, 'getByCategory']);
+
+
+
+// Routes D'etudiant
+Route::post('/etudiants/login', [ApiEtudiantController::class, 'login']);
+Route::post('/etudiants/logout', [ApiEtudiantController::class, 'logout']); // fonctionne même sans auth mais nécessite le token dans l'en-tête
+
+Route::get('/etudiants', [ApiEtudiantController::class, 'index']);
+Route::post('/etudiants', [ApiEtudiantController::class, 'store']);
+Route::get('/etudiants/{id}', [ApiEtudiantController::class, 'show']);
+Route::put('/etudiants/{id}', [ApiEtudiantController::class, 'update']);
+Route::delete('/etudiants/{id}', [ApiEtudiantController::class, 'destroy']);

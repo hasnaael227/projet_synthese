@@ -2,93 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Chapitre;
 use App\Models\Category;
+use App\Models\Cours;
 use Illuminate\Http\Request;
 
 class ApiChapitreController extends Controller
 {
-    // Liste tous les chapitres avec leur catégorie
     public function index()
     {
         $chapitres = Chapitre::with('category')->get();
         return response()->json($chapitres);
     }
 
-    // Donne la liste des catégories (utile pour créer ou éditer)
-    public function categories()
-    {
-        $categories = Category::all();
-        return response()->json($categories);
-    }
-
-    // Crée un nouveau chapitre
     public function store(Request $request)
     {
         $validated = $request->validate([
             'titre' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'cours_id' => 'required|exists:cours,id',
         ]);
 
         $chapitre = Chapitre::create($validated);
 
-        return response()->json([
-            'message' => 'Chapitre créé avec succès',
-            'data' => $chapitre
-        ], 201);
+        return response()->json(['message' => 'Chapitre créé avec succès', 'chapitre' => $chapitre], 201);
     }
 
-    // Affiche un chapitre spécifique
     public function show($id)
     {
-        $chapitre = Chapitre::with('category')->find($id);
-
-        if (!$chapitre) {
-            return response()->json(['message' => 'Chapitre non trouvé'], 404);
-        }
-
+        $chapitre = Chapitre::with('category', 'cours')->findOrFail($id);
         return response()->json($chapitre);
     }
 
-    // Met à jour un chapitre
     public function update(Request $request, $id)
     {
-        $chapitre = Chapitre::find($id);
-
-        if (!$chapitre) {
-            return response()->json(['message' => 'Chapitre non trouvé'], 404);
-        }
-
         $validated = $request->validate([
             'titre' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'cours_id' => 'required|exists:cours,id',
         ]);
 
+        $chapitre = Chapitre::findOrFail($id);
         $chapitre->update($validated);
 
-        return response()->json([
-            'message' => 'Chapitre mis à jour avec succès',
-            'data' => $chapitre
-        ]);
+        return response()->json(['message' => 'Chapitre mis à jour avec succès', 'chapitre' => $chapitre]);
     }
 
-    // Supprime un chapitre
     public function destroy($id)
     {
-        $chapitre = Chapitre::find($id);
-
-        if (!$chapitre) {
-            return response()->json(['message' => 'Chapitre non trouvé'], 404);
-        }
-
+        $chapitre = Chapitre::findOrFail($id);
         $chapitre->delete();
 
         return response()->json(['message' => 'Chapitre supprimé avec succès']);
     }
-     // GET /api/chapitres-by-categorie/{id}
+
     public function getByCategorie($id)
     {
         $chapitres = Chapitre::where('category_id', $id)->get(['id', 'titre']);
         return response()->json($chapitres);
+    }
+
+    public function addCourse(Request $request, $chapitreId)
+    {
+        $chapitre = Chapitre::find($chapitreId);
+
+        if (!$chapitre) {
+            return response()->json(['error' => 'Chapitre introuvable'], 404);
+        }
+
+        return response()->json(['message' => 'Chapitre trouvé', 'chapitre' => $chapitre]);
+    }
+
+    public function removeCourse($chapitreId, $coursId)
+    {
+        $chapitre = Chapitre::findOrFail($chapitreId);
+        $chapitre->cours()->detach($coursId);
+
+        return response()->json(['message' => 'Cours supprimé du chapitre avec succès.']);
     }
 }

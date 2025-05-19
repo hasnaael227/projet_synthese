@@ -93,4 +93,9 @@ class ApiCoursController extends Controller
         $cours->delete();
         return response()->json(['message' => 'Cours supprimé avec succès']);
     }
+        public function getByCategory($categoryId)
+    {
+        $cours = Cours::where('category_id', $categoryId)->get(['id', 'titre']);
+        return response()->json($cours);
+    }
 }

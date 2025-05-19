@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
@@ -7,15 +8,46 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simuler la connexion (remplacer par un appel API réel)
-    if (email === 'user@skillup.com' && password === 'user123') {
-      // Stockage token ou info utilisateur ici si besoin
-      navigate('/');
-    } else {
-      alert('Identifiants incorrects');
+    try {
+      const response = await fetch('http://localhost:8000/api/etudiants/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.token) {
+        localStorage.setItem('token', data.token);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Connexion réussie',
+          showConfirmButton: false,
+          timer: 1500
+        });
+
+        navigate('/');
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Échec de la connexion',
+          text: data.message || 'Identifiants incorrects'
+        });
+      }
+    } catch (error) {
+      console.error('Erreur lors de la connexion :', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur serveur',
+        text: 'Une erreur est survenue. Veuillez réessayer.'
+      });
     }
   };
 

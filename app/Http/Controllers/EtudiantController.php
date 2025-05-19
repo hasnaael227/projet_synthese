@@ -123,5 +123,38 @@ class EtudiantController extends Controller
         return view('etudiants.edit-profile', compact('etudiant'));
     }
 
+        public function updateProfile(Request $request)
+    {
+        $etudiant = Etudiant::find(session('etudiant')->id);
+
+        if (!$etudiant) {
+            return redirect()->route('login.form');
+        }
+
+        $request->validate([
+            'nom' => 'required',
+            'prenom' => 'required',
+            'numTel' => 'required',
+            'email' => 'required|email|unique:etudiants,email,' . $etudiant->id,
+            'password' => 'nullable|min:6',
+        ]);
+
+        $etudiant->nom = $request->nom;
+        $etudiant->prenom = $request->prenom;
+        $etudiant->numTel = $request->numTel;
+        $etudiant->email = $request->email;
+
+        if ($request->filled('password')) {
+            $etudiant->password = Hash::make($request->password);
+        }
+
+        $etudiant->save();
+
+        session(['etudiant' => $etudiant]); // Mise à jour de la session
+
+        return redirect()->route('etudiant.profile')->with('success', 'Profil mis à jour avec succès.');
+    }
+
+
 }
 

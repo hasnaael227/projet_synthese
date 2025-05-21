@@ -51,13 +51,11 @@
     <div class="sidebar">
         <a class="navbar-brand" href="#">Gestion des Employés</a>
         <ul class="nav flex-column">
-            @guest('users')
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
-                        <i class="fa-solid fa-sign-in-alt"></i> Connexion Utilisateur
-                    </a>
-                </li>
-            @endguest
+@guest  {{-- sans 'users' --}}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}">Connexion Utilisateur</a>
+    </li>
+@endguest
 
             
                 <li class="nav-item">

@@ -18,4 +18,13 @@ public function cours()
 {
     return $this->hasMany(Cours::class, 'category_id');
 }
+
+public function etudiants()
+{
+    return $this->belongsToMany(Etudiant::class, 'category_etudiant');
+}
+// Categorie.php
+public function paiements() {
+    return $this->hasMany(Paiement::class);
+}
 }

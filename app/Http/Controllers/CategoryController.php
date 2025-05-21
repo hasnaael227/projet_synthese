@@ -9,10 +9,10 @@ class CategoryController extends Controller
 {
     // Afficher toutes les catégories
     public function index()
-    {
-        $categories = Category::all();
-        return view('categories.index', compact('categories'));
-    }
+{
+    $categories = Category::all();
+    return view('categories.index', compact('categories'));
+}
 
     // Afficher le formulaire de création
     public function create()

@@ -40,7 +40,19 @@
                     <td>
                         <a href="{{ route('categories.show', $category) }}" class="btn btn-sm btn-info">Voir</a>
                         <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-primary">Modifier</a>
-                        <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Supprimer cette catégorie ?')">
+                <td>{{ $categorie->nom }}</td>
+<td>
+    @foreach ($categories as $categorie)
+        <div style="margin-bottom: 10px;">
+            <span>{{ $categorie->nom }}</span>
+            <form action="{{ route('paiement.payer', $categorie->id) }}" method="POST">
+    @csrf
+    <button type="submit">Payer</button>
+</form>
+        </div>
+    @endforeach
+</td>
+
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>

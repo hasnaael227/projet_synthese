@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
+use App\Models\Category;
 use App\Models\Etudiant;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -155,12 +156,12 @@ public function profile(Request $request)
     ]);
 }
 
-public function editProfile()
+public function editProfile($id)
 {
-    $etudiant = Auth::guard('sanctum')->user();
+    $etudiant = Etudiant::find($id);
 
     if (!$etudiant) {
-        return response()->json(['message' => 'Non autorisé.'], 401);
+        return response()->json(['message' => 'Étudiant non trouvé.'], 404);
     }
 
     return response()->json([
@@ -168,4 +169,43 @@ public function editProfile()
         'etudiant' => $etudiant,
     ]);
 }
+
+public function afficherProgression($etudiantId)
+{
+    $etudiant = Etudiant::find($etudiantId);
+
+    if (!$etudiant) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Étudiant non trouvé'
+        ], 404);
+    }
+
+    $categories = Category::with('cours')->get();
+    $coursTermines = $etudiant->progressions()
+                            ->where('completed', true)
+                            ->pluck('cours_id')
+                            ->toArray();
+
+    $resultats = [];
+
+    foreach ($categories as $categorie) {
+        $coursIds = $categorie->cours->pluck('id')->toArray();
+        $total = count($coursIds);
+        $done = count(array_intersect($coursIds, $coursTermines));
+
+        $resultats[] = [
+            'categorie' => $categorie->name,
+            'progression' => $total > 0 ? round(($done / $total) * 100) : 0
+        ];
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'etudiant_id' => $etudiant->id,
+        'progressions' => $resultats
+    ]);
+}
+
+
 }

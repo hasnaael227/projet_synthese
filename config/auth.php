@@ -17,6 +17,7 @@ return [
         'guard' => 'web',
         'passwords' => 'users',
     ],
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -40,6 +41,21 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+        'driver' => 'token',
+        'provider' => 'users',
+    ],
+
+    'users' => [        // <--- si tu veux ce guard, il doit être défini
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+    'etudiant' => [
+        'driver' => 'token', // ou 'sanctum'
+        'provider' => 'etudiants',
+    ],
     ],
 
     /*
@@ -64,11 +80,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    'etudiants' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Etudiant::class,
+    ],
     ],
 
     /*
@@ -106,6 +121,10 @@ return [
     'provider' => 'users',
     'hash' => false,
 ],
+    'etudiant' => [
+        'driver' => 'token', // ou 'sanctum' si tu utilises Laravel Sanctum
+        'provider' => 'etudiants',
+    ],
 
 
     /*
@@ -125,10 +144,10 @@ return [
         'driver' => 'session',
         'provider' => 'users',
     ],
-    'users' => [  // Ajouter ce garde
-        'driver' => 'session',
-        'provider' => 'users',
-    ],
+    // 'users' => [  // Ajouter ce garde
+    //     'driver' => 'session',
+    //     'provider' => 'users',
+    // ],
 ],
 
 ];

@@ -7,6 +7,8 @@ use App\Http\Controllers\CoursController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChapitreController;
 use App\Http\Controllers\EtudiantController;
+    use App\Http\Controllers\PaiementController;
+
 
 // ===== Authentification =====
 
@@ -155,3 +157,14 @@ Route::get('/etudiant/{etudiant}/progression', [EtudiantController::class, 'affi
     Route::get('/formateur/etudiants/progression', [UserController::class, 'suiviEtudiants'])
     ->name('formateur.etudiants.progression');
 
+
+
+
+Route::get('/paiements', [PaiementController::class, 'index'])->name('paiements.index');
+Route::get('/paiements/create', [PaiementController::class, 'create'])->name('paiements.create');
+Route::post('/paiements', [PaiementController::class, 'store'])->name('paiements.store');
+Route::get('/paiements/{paiement}', [PaiementController::class, 'show'])->name('paiements.show');
+
+
+
+Route::post('/paiement/{categorie}', [PaiementController::class, 'payer'])->name('paiement.payer');

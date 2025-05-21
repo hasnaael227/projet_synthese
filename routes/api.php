@@ -112,7 +112,7 @@ Route::put('/etudiants/{id}', [ApiEtudiantController::class, 'update']);
 Route::delete('/etudiants/{id}', [ApiEtudiantController::class, 'destroy']);
 
     Route::get('/etudiant/profile', [ApiEtudiantController::class, 'profile']);
-    Route::get('/etudiant/edit', [ApiEtudiantController::class, 'editProfile']);
+Route::get('/etudiant/{id}/edit', [ApiEtudiantController::class, 'editProfile']);
     Route::put('/etudiant/profile/update', [ApiEtudiantController::class, 'updateProfile']);
 
 Route::get('/fake-login', function () {
@@ -120,3 +120,6 @@ Route::get('/fake-login', function () {
     session(['etudiant' => $etudiant]);
     return response()->json(['message' => 'Login simulé', 'etudiant' => $etudiant]);
 });
+
+
+Route::get('/etudiants/{id}/progression', [ApiEtudiantController::class, 'afficherProgression']);

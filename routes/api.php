@@ -9,6 +9,7 @@ use App\Http\Controllers\ApiCoursController;
 use App\Http\Controllers\ApiCategoryController;
 use App\Http\Controllers\ApiChapitreController;
 use App\Http\Controllers\ApiEtudiantController;
+use App\Http\Controllers\ApiPaiementController;
 
 
 
@@ -121,5 +122,9 @@ Route::get('/fake-login', function () {
     return response()->json(['message' => 'Login simulé', 'etudiant' => $etudiant]);
 });
 
-
 Route::get('/etudiants/{id}/progression', [ApiEtudiantController::class, 'afficherProgression']);
+
+Route::get('/paiements', [ApiPaiementController::class, 'index']);
+Route::get('/paiements/{id}', [ApiPaiementController::class, 'show']);
+Route::post('/paiements', [ApiPaiementController::class, 'store']);
+Route::delete('/paiements/{id}', [ApiPaiementController::class, 'destroy']);
